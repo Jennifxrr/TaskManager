@@ -4,6 +4,5 @@ module.exports = {
 	async execute(client, interaction) {
 
 		interaction.reply('Hi');
-
 	},
 };
