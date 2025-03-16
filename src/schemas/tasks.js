@@ -1,11 +1,15 @@
 const { Schema, model } = require('mongoose');
 
-const tasks = new Schema({
+const taskmanagement = new Schema({
 	guildId: String,
 	userId: String,
-	timezone: {
+	difference: {
 		type: String,
-		default: 'UTC',
+		default: '+',
+	},
+	hour: {
+		type: Number,
+		default: 0,
 	},
 	tasks: {
 		type: Array,
@@ -13,4 +17,4 @@ const tasks = new Schema({
 	},
 });
 
-module.exports = model('tasks', tasks);
+module.exports = model('taskmanagement', taskmanagement);

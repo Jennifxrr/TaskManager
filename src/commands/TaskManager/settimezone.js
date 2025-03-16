@@ -25,7 +25,8 @@ module.exports = {
 			});
 		}
 
-		taskDoc.timezone = `UTC${difference}${hours}`;
+		taskDoc.difference = `${difference}`;
+		taskDoc.hour = hours;
 
 		taskDoc.save().catch(() => {return;});
 
