@@ -26,18 +26,15 @@ module.exports = {
 
 		for (let i = 0; i < taskDoc.tasks.length; i++) {
 			if (taskDoc.tasks[i].title.toLowerCase() == task.toLowerCase()) {
-				taskObj = taskDoc.tasks[i];
-				taskIndex = i;
+				if (taskDoc.tasks[i].complete == false) {
+					taskObj = taskDoc.tasks[i];
+					taskIndex = i;
+				}
 			}
 		}
 
 		if (!taskObj) {
-			const error = client.error('Task Not Avaliable!', 'The task that you are trying to complete does not exist!');
-			return interaction.reply({ embeds: [error], flags: 64 });
-		}
-
-		if (taskObj.complete == true) {
-			const error = client.error('Task Already Complete!', 'The task you are trying to complete is already completed!');
+			const error = client.error('Task Not Avaliable!', 'There is no ongoing task with that title avaliable to complete!');
 			return interaction.reply({ embeds: [error], flags: 64 });
 		}
 

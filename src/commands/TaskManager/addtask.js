@@ -40,7 +40,9 @@ module.exports = {
 
 		taskDoc.tasks.forEach(task => {
 			if (task.title.toLowerCase() == title.toLowerCase()) {
-				taskExists = true;
+				if (task.complete == false) {
+					taskExists = true;
+				}
 			}
 		});
 
@@ -98,7 +100,7 @@ module.exports = {
 
 		const duedatestring = new Date(duedate.toISOString());
 
-		if (datenow > duedatestring) {
+		if (datenow > duedate) {
 			const pastdate = client.error('Invalid Date!', 'You can only schedule tasks for future time!');
 			return interaction.reply({ embeds: [pastdate], flags: 64 });
 		}
