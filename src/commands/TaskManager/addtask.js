@@ -1,6 +1,5 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const taskModel = require('../../schemas/tasks');
-const moment = require('moment-timezone');
 const timebetween = require('../../utils/timebetween');
 
 module.exports = {
@@ -24,6 +23,31 @@ module.exports = {
 		const year = interaction.options.getInteger('year');
 		let hours = interaction.options.getInteger('hours');
 		let minutes = interaction.options.getInteger('minutes');
+
+		let taskDoc = await taskModel.findOne({
+			guildId: interaction.guild.id,
+			userId: interaction.user.id,
+		});
+
+		if (!taskDoc) {
+			taskDoc = await taskModel.create({
+				guildId: interaction.guild.id,
+				userId: interaction.user.id,
+			});
+		}
+
+		let taskExists = false;
+
+		taskDoc.tasks.forEach(task => {
+			if (task.title.toLowerCase() == title.toLowerCase()) {
+				taskExists = true;
+			}
+		});
+
+		if (taskExists == true) {
+			const error = client.error('Duplicate Task Name', 'You can not create two tasks with the same name!');
+			return interaction.reply({ embeds: [error], flags: 64 });
+		}
 
 		if (month < 1 || month > 12) {
 			const montherror = client.error('Invalid Month!', 'You may only insert a number 1-12!');
@@ -55,56 +79,37 @@ module.exports = {
 			return interaction.reply({ embeds: [hourerror], flags: 64 });
 		}
 
-		function count(number) {
-			const string = Math.abs(number).toString();
-			return string.length;
-		}
+		month = month.toString().padStart(2, '0');
+		day = day.toString().padStart(2, '0');
+		hours = hours.toString().padStart(2, '0');
+		minutes = minutes.toString().padStart(2, '0');
 
-		if (count(month) < 2) {
-			month = month.toString().padStart(2, '0');
-		}
-		if (count(day) < 2) {
-			day = day.toString().padStart(2, '0');
-		}
-		if (count(hours) < 2) {
-			hours = hours.toString().padStart(2, '0');
-		}
-		if (count(minutes) < 2) {
-			minutes = minutes.toString().padStart(2, '0');
-		}
 
-		const duedate = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00`);
+		const duedate = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+
 		const datenow = new Date(Date.now());
 
-		if (datenow > duedate) {
-			const pastdate = client.error('Invalid Date!', 'You can only schedule tasks for future time!');
-			return interaction.reply({ embeds: [pastdate], flags: 64 });
-		}
-
-		let taskDoc = await taskModel.findOne({
-			guildId: interaction.guild.id,
-			userId: interaction.user.id,
-		});
-
-		if (!taskDoc) {
-			taskDoc = await taskModel.create({
-				guildId: interaction.guild.id,
-				userId: interaction.user.id,
-			});
-		}
-
-		let due = moment.utc(duedate);
 		if (taskDoc.difference == '+') {
-			due = due.add(taskDoc.hour, 'hours');
+			duedate.setHours(duedate.getHours() - taskDoc.hour);
 		}
 		else {
-			due = due.subtract(taskDoc.hour, 'hours');
+			duedate.setHours(duedate.getHours() + taskDoc.hour);
+		}
+
+		const duedatestring = new Date(duedate.toISOString());
+
+		if (datenow > duedatestring) {
+			const pastdate = client.error('Invalid Date!', 'You can only schedule tasks for future time!');
+			return interaction.reply({ embeds: [pastdate], flags: 64 });
 		}
 
 		const taskObject = {
 			title: title,
 			description: description,
-			dueDate: due.toDate(),
+			dueDate: duedatestring,
+			dateString: `${month}/${day}/${year} at ${hours}:${minutes}`,
+			complete: false,
+			dateCompletedString: 'N/A',
 		};
 
 		taskDoc.tasks.push(taskObject);
@@ -115,8 +120,8 @@ module.exports = {
 			.addFields([
 				{ name: 'Title', value: `${title}` },
 				{ name: 'Description', value: `${description}` },
-				{ name: 'Due Date', value: `${month}/${day}/${year} @ ${hours}:${minutes}` },
-				{ name: 'Time Until', value: `${timebetween(datenow, duedate).join(' ')}` },
+				{ name: 'Due Date', value: `${month}/${day}/${year} at ${hours}:${minutes}` },
+				{ name: '⌚ Time Left', value: `${timebetween(datenow, duedatestring).join(' ')}` },
 			]);
 
 		interaction.reply({ embeds: [embed], flags: 64 });
