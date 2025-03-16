@@ -115,7 +115,7 @@ module.exports = {
 			.addFields([
 				{ name: 'Title', value: `${title}` },
 				{ name: 'Description', value: `${description}` },
-				{ name: 'Due Date', value: `${day}/${month}/${year} @ ${hours}:${minutes}` },
+				{ name: 'Due Date', value: `${month}/${day}/${year} @ ${hours}:${minutes}` },
 				{ name: 'Time Until', value: `${timebetween(datenow, duedate).join(' ')}` },
 			]);
 
