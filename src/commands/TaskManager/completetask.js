@@ -62,7 +62,7 @@ module.exports = {
 		taskDoc.tasks[taskIndex] = newObj;
 		taskDoc.save().catch(() => {return;});
 
-		const success = client.success('Task Completed', `You have successfully completed the **${(userDateString.getUTCMonth() + 1).toString().padStart(2, '0')}/${userDateString.getUTCDate().toString().padStart(2, '0')}/${userDateString.getUTCFullYear()} at ${userDateString.getUTCHours().toString().padStart(2, '0')}:${userDateString.getUTCMinutes().toString().padStart(2, '0')}**`);
+		const success = client.success('Task Completed', `You have successfully completed the **${task}** task at **${(userDateString.getUTCMonth() + 1).toString().padStart(2, '0')}/${userDateString.getUTCDate().toString().padStart(2, '0')}/${userDateString.getUTCFullYear()} at ${userDateString.getUTCHours().toString().padStart(2, '0')}:${userDateString.getUTCMinutes().toString().padStart(2, '0')}**`);
 		interaction.reply({ embeds: [success], flags: 64 });
 
 	},

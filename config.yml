@@ -4,3 +4,6 @@
 embedColor: "#79b8e0"
 embedFooter: "Stitch Bot"
 embedImage: "https://media.discordapp.net/attachments/1114956570552455292/1348747125789294633/siiitch.png?ex=67d09625&is=67cf44a5&hm=a948e6d871c88e4baf02580e1728f6c49b432e1eaec1341415e76a1b0774905a&=&format=webp&quality=lossless"
+
+#utcHour - The hour in the UTC military time schedule that you would like the bot to check for overdue tasks!
+utcHour: 0

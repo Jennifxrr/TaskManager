@@ -63,7 +63,8 @@ module.exports = {
 					const datenow = new Date(Date.now());
 
 					const description = await Promise.all(tasksForPage.map(async (t, index) => {
-						return `\`Task #${(pg - 1) * 10 + index + 1}\` **${t.title}** : ⌚ ${t.dateString} (${timebetween(datenow, t.dueDate).join(' ')})`;
+						const time = timebetween(datenow, t.dueDate);
+						return `\`Task #${(pg - 1) * 10 + index + 1}\` **${t.title}** : ⌚ ${t.dateString} (${time.length < 1 ? '**Overdue**' : time.join(' ')})`;
 					}));
 
 					embed.setDescription(description.join('\n'));
