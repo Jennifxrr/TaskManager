@@ -35,7 +35,7 @@ module.exports = {
 
 		const now = new Date();
 		const nowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds()));
-   		const nextRun = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 7, 0, 0));
+   		const nextRun = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), client.config.utcHour, 0, 0, 0));
 
 		if (nowUTC > nextRun) {
 			nextRun.setUTCDate(nextRun.getUTCDate() + 1);
